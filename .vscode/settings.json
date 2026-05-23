@@ -1,0 +1,6 @@
+{
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python.defaultInterpreterPath": "C:\\Users\\82103\\anaconda3\\envs\\mnist-nn\\python.exe",
+    "python.condaPath": "C:\\Users\\82103\\anaconda3\\Scripts\\conda.exe",
+    "python.terminal.activateEnvironment": true
+}
