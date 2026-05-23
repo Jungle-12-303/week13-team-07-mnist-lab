@@ -12,7 +12,9 @@ def cross_entropy_loss(y_pred, y_true):
     """
     # TODO: 정답 클래스 확률의 log 값을 이용해 batch 평균 cross entropy를 계산하세요.
     # 힌트: np.clip으로 log(0)을 피하고, np.arange(batch_size)로 정답 위치를 고릅니다.
+    # 118 page 참고!
 
+    # 배열의 차원(배열의 축 수)
     if y_pred.ndim == 1:
         y_true = y_true.reshape(1, y_true.size)
         y_pred = y_pred.reshape(1, y_pred.size)
