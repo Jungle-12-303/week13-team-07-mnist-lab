@@ -3,7 +3,7 @@
 
 import numpy as np
 
-
+# 이미 계산되어 넘어온 gradient를 사용해서 params를 업데이트한다.
 class SGD:
     """
     확률적 경사하강법(SGD).
@@ -18,8 +18,9 @@ class SGD:
     def update(self, params, grads):
         """params dict의 모든 파라미터를 제자리(in-place)에서 갱신합니다."""
         # TODO: params[key]를 gradient 반대 방향으로 업데이트하세요.
-        raise NotImplementedError("SGD.update를 구현하세요.")
-
+        # 테스트에서는 파라미터가 하나뿐이지만, 실제 모델에서는 여러 개라서 for문으로 모든 key를 돌면서 처리한다.
+        for key in params:
+            params[key] = params[key] - self.lr * grads[key]
 
 class Adam:
     """
