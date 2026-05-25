@@ -34,8 +34,8 @@ class TestReLU:
         relu = ReLU()
         x = np.array([[-1.0, 2.0], [0.0, -3.0]])
         relu.forward(x)
-        dout = np.ones_like(x)
-        dx = relu.backward(dout)
+        dout = np.ones_like(x)  # 모든 위치에 gradient 1이 들어왔다. dout = [[1,1],[1,1]]
+        dx = relu.backward(dout)    # relu.backward가 dout을 통과시키거나 막음 (통과는 1, 막으면 0)
         # 음수/0 위치에서는 gradient가 0이어야 합니다.
         assert dx[0, 0] == 0 and dx[1, 0] == 0 and dx[1, 1] == 0
         assert dx[0, 1] == 1
