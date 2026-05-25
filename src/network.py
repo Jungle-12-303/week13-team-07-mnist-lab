@@ -30,9 +30,33 @@ class NeuralNetwork:
             dropout_ratio: Dropout에서 끌 뉴런 비율
         """
         # TODO: params dict를 만들고 Affine/BatchNorm/ReLU/Dropout layer를 순서대로 구성하세요.
+
+
+        # params, grads 변수 초기화, params는 가중치와 bias 값, grads는 backward 수행시 계산되는 변화량값.
+        self.params = {}
+        self.grads = OrderedDict()
         # 권장 구조: 784 -> 512 -> 256 -> 10
+        
+        # params 초기화. ReLU를 고려한 정규 분포 표준 편차 계산
+        input_size, hidden_size_1, hidden_size_2, output_size = 784, 512, 256, 10
+        self.params['W1'] = np.random.randn(input_size, hidden_size_1) / np.sqrt(2 / input_size)
+        self.params['b1'] = np.zeros(hidden_size_1)
+        self.params['W2'] = np.random.randn(hidden_size_1, hidden_size_2) / np.sqrt(2 /hidden_size_1)
+        self.params['b2'] = np.zeros(hidden_size_2)
+        self.params['W3'] = np.random.randn(hidden_size_2, output_size) / np.sqrt(2 / hidden_size_2)
+        self.params['b3'] = np.zeros(output_size)
         # self.layers는 OrderedDict로 만들고, self.grads는 params와 같은 key를 갖게 합니다.
-        raise NotImplementedError("NeuralNetwork.__init__을 구현하세요.")
+
+        # layers 배치
+        self.layers = OrderedDict()
+        self.layers['Affine1'] = Affine(self.params['W1'], self.params['b1'])
+        self.layers['ReLU1'] = ReLU()
+        self.layers['Affine2'] = Affine(self.params['W2'], self.params['b2'])
+        self.layers['ReLU2'] = ReLU()
+        self.layers['Affine3'] = Affine(self.params['W3'], self.params['b3'])
+
+        self.lastLayer = Softmax()
+        # raise NotImplementedError("NeuralNetwork.__init__을 구현하세요.")
 
     def forward(self, x, train=True):
         """
@@ -44,7 +68,11 @@ class NeuralNetwork:
             (batch_size, 10) 각 숫자 클래스의 확률
         """
         # TODO: self.layers를 순서대로 통과시키고 마지막에 Softmax를 적용하세요.
-        raise NotImplementedError("NeuralNetwork.forward를 구현하세요.")
+        input_data = x
+        for layer in self.layers.values():
+            input_data = layer.forward(input_data)
+
+        return self.lastLayer.forward(input_data)
 
     def backward(self, dout):
         """
@@ -54,7 +82,15 @@ class NeuralNetwork:
             dout: Softmax+CrossEntropy를 합친 출력층 gradient
         """
         # TODO: layer를 역순으로 통과시키고 Affine/BatchNorm의 gradient를 self.grads에 모으세요.
-        raise NotImplementedError("NeuralNetwork.backward를 구현하세요.")
+        output_data = dout
+        for layer_name, layer in reversed(self.layers.items()):
+            output_data = layer.backward(output_data)
+
+            # Affine 계층일경우 grads 저장
+            if isinstance(layer, Affine):
+                affine_index = layer_name[len(layer_name)-1:]
+                self.grads['W'+affine_index] = layer.dW
+                self.grads['b'+affine_index] = layer.db
 
     def loss(self, x, y):
         """현재 모델의 예측 확률을 만든 뒤 cross entropy loss를 반환합니다."""
