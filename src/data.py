@@ -10,6 +10,8 @@ import urllib.request
 
 import numpy as np
 
+from backend import to_device
+
 
 def load_mnist(data_dir="data"):
     """
@@ -34,4 +36,4 @@ def load_mnist(data_dir="data"):
         y_train = data["y_train"]
         y_test = data["y_test"]
 
-    return (x_train, y_train), (x_test, y_test)
+    return (to_device(x_train), to_device(y_train)), (to_device(x_test), to_device(y_test))

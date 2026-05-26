@@ -7,7 +7,7 @@ MNIST 분류용 신경망 조립 모듈.
 
 from collections import OrderedDict
 
-import numpy as np
+from backend import xp as np
 
 from activations import ReLU, Softmax
 from layers import Affine, BatchNorm, Dropout

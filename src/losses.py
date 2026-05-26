@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """손실 함수 모음."""
 
-import numpy as np
+from backend import xp as np
 
 
 def cross_entropy_loss(y_pred, y_true):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """파라미터 업데이트 규칙을 모아 둔 optimizer 모듈."""
 
-import numpy as np
+from backend import xp as np
 
 # 이미 계산되어 넘어온 gradient를 사용해서 params를 업데이트한다.
 class SGD:

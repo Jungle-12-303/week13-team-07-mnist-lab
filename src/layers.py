@@ -8,7 +8,7 @@
 - Dropout.forward, Dropout.backward
 """
 
-import numpy as np
+from backend import xp as np
 
 
 class Affine:

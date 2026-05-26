@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """학습 루프, 평가, 시각화 함수 모음."""
 
-import matplotlib.pyplot as plt
-import numpy as np
-
+from backend import scalar_to_float, to_cpu
+from backend import xp as np
 from losses import cross_entropy_loss
 
 
@@ -40,7 +39,7 @@ def train(model, optimizer, x_train, y_train, epochs=20, batch_size=128):
             model.backward(dout)
             optimizer.update(model.params, model.grads)
 
-            epoch_loss += batch_loss * y_batch.size
+            epoch_loss += scalar_to_float(batch_loss) * y_batch.size
 
         loss_history.append(epoch_loss / num_train)
 
@@ -50,14 +49,16 @@ def train(model, optimizer, x_train, y_train, epochs=20, batch_size=128):
 def evaluate(model, x, y):
     """정확도(%)와 총 파라미터 수 반환."""
     y_pred = model.predict(x)
-    accuracy = np.mean(np.argmax(y_pred, axis=1) == y) * 100
+    accuracy = scalar_to_float(np.mean(np.argmax(y_pred, axis=1) == y) * 100)
     total_params = sum(p.size for p in model.params.values())
     return accuracy, total_params
 
 
 def plot_loss_history(loss_history):
     """손실 커브 그래프."""
-    plt.plot(loss_history)
+    import matplotlib.pyplot as plt
+
+    plt.plot(to_cpu(loss_history))
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.title("Training Loss Curve")

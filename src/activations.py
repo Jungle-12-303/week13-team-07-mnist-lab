@@ -7,7 +7,7 @@
 - Softmax.forward, Softmax.backward
 """
 
-import numpy as np
+from backend import xp as np
 
 
 class ReLU:
