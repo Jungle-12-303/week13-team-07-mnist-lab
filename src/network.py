@@ -45,14 +45,27 @@ class NeuralNetwork:
         self.params['b2'] = np.zeros(hidden_size_2)
         self.params['W3'] = np.random.randn(hidden_size_2, output_size) / np.sqrt(2 / hidden_size_2)
         self.params['b3'] = np.zeros(output_size)
+        if use_batchnorm:
+            self.params['gamma1'] = np.ones(hidden_size_1)
+            self.params['beta1'] = np.zeros(hidden_size_1)
+            self.params['gamma2'] = np.ones(hidden_size_2)
+            self.params['beta2'] = np.zeros(hidden_size_2)
         # self.layers는 OrderedDict로 만들고, self.grads는 params와 같은 key를 갖게 합니다.
 
         # layers 배치
         self.layers = OrderedDict()
         self.layers['Affine1'] = Affine(self.params['W1'], self.params['b1'])
+        if use_batchnorm: 
+            self.layers['BatchNorm1'] = BatchNorm(self.params['gamma1'], self.params['beta1'])
         self.layers['ReLU1'] = ReLU()
+        if use_dropout:
+            self.layers['Dropout1'] = Dropout(drop_ratio=dropout_ratio)
         self.layers['Affine2'] = Affine(self.params['W2'], self.params['b2'])
+        if use_batchnorm: 
+            self.layers['BatchNorm2'] = BatchNorm(self.params['gamma2'], self.params['beta2'])
         self.layers['ReLU2'] = ReLU()
+        if use_dropout:
+            self.layers['Dropout2'] = Dropout(drop_ratio=dropout_ratio)
         self.layers['Affine3'] = Affine(self.params['W3'], self.params['b3'])
 
         self.lastLayer = Softmax()
@@ -70,7 +83,10 @@ class NeuralNetwork:
         # TODO: self.layers를 순서대로 통과시키고 마지막에 Softmax를 적용하세요.
         input_data = x
         for layer in self.layers.values():
-            input_data = layer.forward(input_data)
+            if isinstance(layer, BatchNorm) or isinstance(layer, Dropout):
+                input_data = layer.forward(input_data, train=train)
+            else:
+                input_data = layer.forward(input_data)
 
         return self.lastLayer.forward(input_data)
 
@@ -91,6 +107,11 @@ class NeuralNetwork:
                 affine_index = layer_name[len(layer_name)-1:]
                 self.grads['W'+affine_index] = layer.dW
                 self.grads['b'+affine_index] = layer.db
+            
+            if isinstance(layer, BatchNorm):
+                batchnorm_index = layer_name[len(layer_name)-1:]
+                self.grads['gamma' + batchnorm_index] = layer.dgamma
+                self.grads['beta' + batchnorm_index] = layer.dbeta
 
     def loss(self, x, y):
         """현재 모델의 예측 확률을 만든 뒤 cross entropy loss를 반환합니다."""
