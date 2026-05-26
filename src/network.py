@@ -39,11 +39,11 @@ class NeuralNetwork:
         
         # params 초기화. ReLU를 고려한 정규 분포 표준 편차 계산
         input_size, hidden_size_1, hidden_size_2, output_size = 784, 512, 256, 10
-        self.params['W1'] = np.random.randn(input_size, hidden_size_1) / np.sqrt(2 / input_size)
+        self.params['W1'] = np.random.randn(input_size, hidden_size_1) * np.sqrt(2 / input_size)
         self.params['b1'] = np.zeros(hidden_size_1)
-        self.params['W2'] = np.random.randn(hidden_size_1, hidden_size_2) / np.sqrt(2 /hidden_size_1)
+        self.params['W2'] = np.random.randn(hidden_size_1, hidden_size_2) * np.sqrt(2 /hidden_size_1)
         self.params['b2'] = np.zeros(hidden_size_2)
-        self.params['W3'] = np.random.randn(hidden_size_2, output_size) / np.sqrt(2 / hidden_size_2)
+        self.params['W3'] = np.random.randn(hidden_size_2, output_size) * np.sqrt(2 / hidden_size_2)
         self.params['b3'] = np.zeros(output_size)
         if use_batchnorm:
             self.params['gamma1'] = np.ones(hidden_size_1)
