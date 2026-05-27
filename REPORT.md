@@ -31,6 +31,7 @@
 | Hidden Block 1 | `Affine(512) -> BatchNorm -> ReLU -> Dropout` | 1차 feature 추출 |
 | Hidden Block 2 | `Affine(256) -> BatchNorm -> ReLU -> Dropout` | 2차 feature 추출 |
 | Output Block | `Affine(10) -> Softmax -> Argmax` | 클래스 점수, 확률, 최종 예측 생성 |
+| Loss Function | `Cross Entroy Error` | 교차 엔트로피 에러 함수 사용 |
 
 **(2층 은닉):**  
 입력 784 → Affine(512) → BatchNorm → ReLU → Dropout → Affine(256) → BatchNorm → ReLU → Dropout → Affine(10) → Softmax
@@ -134,15 +135,48 @@ flowchart TD
 | `test-epchos-160-2.pkl` | X | X | - | 160 | 128 | 0.001 | 100.00% | 98.66% | 0.0000 | 535,818 |
 | `test-epchos-160-3.pkl` | X | X | - | 160 | 128 | 0.001 | 100.00% | 98.60% | 0.0000 | 535,818 |
 
-### 손실 커브
+## 손실 커브
 
 - 학습 곡선: (그래프 이미지를 붙이거나, 예: "Epoch 1 Loss 0.42 → Epoch 20 Loss 0.06 수렴" 같이 수치로 요약)
 
 ![학습 손실 곡선](images/train_loss_curve.png)
 
+
+## BatchNorm + Dropout 비교
+
+**BatchNorm vs None BatchNorm**
+
+**Dropout None vs 0.2 vs 0.5**
+
+![배치정규화 드롭아웃 막대 그래프](images/batchnorm-bar.png)
+
+
+## 학습률 비교
+
+**Learning Rate 0.001 vs 0.0005 vs 0.0001**
+
+![학습률 막대 그래프](images/lr-bar.png)
+
+## Overfitting
+
+1% 미만 차이: overfitting 아님
+
+1% 이상 차이: overfitting 가능성
+
+#% 이상 차이: overfitting 확실
+
+![Overfitting](images/overfitting.png)
 ---
 
 ## 6. 회고
 
-- 손실 수렴 여부, 과적합/과소적합 여부
+<!-- - 손실 수렴 여부, 과적합/과소적합 여부 -->
+
+- test_set에 대해서 손실값이 0으로 수럼
+- 가장 높은 test_result에 대해서는 train_acc / test_acc = 100% / 98.68%, 약한 과적합, 심각하지 않음
 - 구조·학습률·Dropout 등 변경 시도와 그 결과 (있다면 간단히)
+- BatchNorm > None BatchNorm
+- learning rate: 0.001 > 0.0005 > 0.0001
+- epochs: 5=96%, 80/160은 과적합, 20~40 적당
+
+- 저장된 실험 결과와 노트북 최종 출력 기준으로 `97% 이상` 목표를 달성함
