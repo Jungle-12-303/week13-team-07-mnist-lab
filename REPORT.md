@@ -163,7 +163,7 @@ flowchart TD
 
 1% 이상 차이: overfitting 가능성
 
-#% 이상 차이: overfitting 확실
+3% 이상 차이: overfitting 확실
 
 ![Overfitting](images/overfitting.png)
 ---
