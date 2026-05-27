@@ -166,6 +166,8 @@ flowchart TD
 3% 이상 차이: overfitting 확실
 
 ![Overfitting](images/overfitting.png)
+
+epoch별 test_acc를 확인할 수 있었으면 정확히 언제 과적합이 일어났는지 확인할 수 있었지만, epochs별로 저장하지 못 해서 과적합의 여부를 추정하기 위해 위의 그래프를 그렸다.
 ---
 
 ## 6. 회고
